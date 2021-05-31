@@ -1,4 +1,4 @@
-import { h as _h, text as _text, app as _app, memo } from "./node_modules/hyperapp/index.js";
+import { h as _h, text as _text, app as _app, memo } from "../../hyperapp/index.js";
 export { h, app, memo, u };
 
 function applyText(children) {

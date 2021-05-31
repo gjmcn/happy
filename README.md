@@ -26,7 +26,7 @@ To Do app from the Hyperapp README using Happy functions:
 
 ```html
 <script type="module">
-  import {u, app, main, h1, input, ul, li, button} from "https://unpkg.com/@gjmcn/happy";
+  import {u, app, main, h1, input, ul, li, button} from "https://cdn.skypack.dev/@gjmcn/happy";
     
   const AddTodo = u('todos', s => {
     s.todos.push(s.value);
