@@ -1,0 +1,22 @@
+{
+  "name": "@gjmcn/happy",
+  "version": "0.1.0",
+  "description": "A few helper/wrapper functions to simplify Hyperapp code.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gjmcn/happy.git"
+  },
+  "author": "Graham McNeill",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gjmcn/happy/issues"
+  },
+  "homepage": "https://github.com/gjmcn/happy#readme",
+  "dependencies": {
+    "hyperapp": "^2.0.18"
+  }
+}
