@@ -11,13 +11,12 @@ function h(...args) {
     ? null : a1;
   const elmts = [];
   for (let i = props === null ? 1 : 2; i < args.length; i++) {
-    let ai = args[i];
+    const ai = args[i];
     if (typeof ai === 'string') {
       elmts.push(_text(ai));
     }
     else if (Array.isArray(ai)) {
-      ai = ai.flat(Infinity);
-      for (let e of ai) {        
+      for (let e of ai.flat(Infinity)) {        
         elmts.push(typeof e === 'string' ? _text(e) : e);
       }
     }
