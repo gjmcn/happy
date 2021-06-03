@@ -1,27 +1,30 @@
 import { h as _h, text as _text, app as _app, memo } from 'hyperapp';
 export { h, app, memo, u };
 
-function applyText(children) {
-  if (typeof children === 'string') {
-    return _text(children);
-  }
-  if (Array.isArray(children)) {
-    return children.map(c => typeof c === 'string' ? _text(c) : c);
-  }
-  return children;
-}
-
 function h(...args) {
-  if (args.length > 2) {
-    return _h(args[0], args[1], applyText(args[2]));
-  }
-  if (args.length === 2) {
-    if (typeof args[1] === 'string' || Array.isArray(args[1])) {
-      return _h(args[0], {}, applyText(args[1]));
+  const a1 = args[1];
+  const props = typeof a1 === 'string' || Array.isArray(a1) ||
+      (a1 &&
+       a1.hasOwnProperty('tag') &&
+       a1.hasOwnProperty('props') && 
+       a1.hasOwnProperty('children'))
+    ? null : a1;
+  const elmts = [];
+  for (let i = props === null ? 1 : 2; i < args.length; i++) {
+    const ai = args[i];
+    if (typeof ai === 'string') {
+      elmts.push(_text(ai));
     }
-    return _h(...args);
+    else if (Array.isArray(ai)) {
+      for (let e of ai) {        
+        elmts.push(typeof e === 'string' ? _text(e) : e);
+      }
+    }
+    else {
+      elmts.push(ai);
+    }
   }
-  return _h(args[0], {});
+  return _h(args[0], props ?? {}, elmts);
 }
 
 function u(...args) {

@@ -18,7 +18,7 @@ E.g. from CDN:
 import {h, u, app} from 'https://cdn.skypack.dev/@gjmcn/happy';
 ```
 
-The `memo` Hyperapp functions can also be imported from `happy`.
+The `memo` Hyperapp function can also be imported from `happy`.
 
 ## Example
 
@@ -33,16 +33,18 @@ To Do app from the Hyperapp README using Happy functions:
     s.value = '';
   });
 
-  const NewValue = u((s, event) => s.value = event.target.value);
+  const NewValue = u((s, event) => {
+    s.value = event.target.value;
+  });
 
   app({
     init: {todos: [], value: ''},
-    view: s => main([
+    view: s => main(
       h1('To do list'),
       input({type: 'text', oninput: NewValue, value: s.value}),
       ul(s.todos.map(todo => li(todo))),
       button({onclick: AddTodo}, 'New!'),
-    ])
+    )
   })
 </script>
 ```
@@ -51,7 +53,13 @@ To Do app from the Hyperapp README using Happy functions:
 
 ### Elements
 
-The virtual node function `h` has parameters `tag`, `props` and `children`, just as in Hyperapp. However, if called with only two arguments, the behavior of `h` depends on the second argument: if it is a string or an array, the second argument is the `children` and the `props` is `{}`; otherwise, the second argument is `props` (which should be an object) and `children` is not used. `h` can also be called with just a `tag` argument.
+The virtual node function `h` has parameters `tag`, `props`, `child_0`, `child_1`, `child_2`, ...&ensp;However:
+
+* If `props` is a string, array, or virtual node, it is actually used as `child_0` and an empty object is used for `props`.
+
+* `child_` arguments that are arrays are 'spread' into separate arguments.
+
+* Only `tag` is required.
 
 Happy also includes _element functions_ for most HTML and SVG elements (see `index.js` for the full list). These functions are used like `h`, but no element name is passed:
 
@@ -64,12 +72,12 @@ input({type: 'range'});
 The required element functions are imported along with other Happy functions. E.g.
 
 ```js
-import {h, u, app, div, p, span} from 'happy';
+import {u, app, div, p, span} from 'happy';
 ```
 
 ### Text
 
-The `text` Hyperapp function is not used. When the `children` argument of `h` or an element function is a string, it is automatically passed to `text`. When `children` is an array, elements of the array that are strings are automatically passed to `text`.
+`h` automatically applies Hyperapp's `text` function to child elements that are strings, so the `text` function is not used explicitly: 
 
 ```js
 // hyperapp
@@ -87,17 +95,17 @@ __Note__ For brevity, call the state parameter `s` rather than `state`. We typic
 
 
 ```js
-// hyperapp (set user property to name)
-const SetUser = (state, name) => ({...state, user: name});
-
-// happy
-const SetUser = u((s, name) => s.user = name);
-
 // hyperapp (increase count property by 1)
 const Increment = state => ({...state, count: state.count + 1});
 
 // happy
 const Increment = u(s => s.count++);
+
+// hyperapp (set user property to name)
+const SetUser = (state, name) => ({...state, user: name});
+
+// happy
+const SetUser = u((s, name) => s.user = name);
 ```
 
 When updating one or more properties that are themselves objects or arrays, we can tell `u` to shallow copy these properties (as well as the state) by passing the property names as arguments. The function is passed after the property names:
