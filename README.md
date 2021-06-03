@@ -57,7 +57,7 @@ The virtual node function `h` has parameters `tag`, `props`, `child_0`, `child_1
 
 * If `props` is a string, array, or virtual node, it is actually used as `child_0` and an empty object is used for `props`.
 
-* `child_` arguments that are arrays are 'spread' into separate arguments.
+* `child_` arguments that are arrays are flattened (nesting is removed) and spread into separate arguments.
 
 * Only `tag` is required.
 
