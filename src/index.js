@@ -1,5 +1,5 @@
 import { h as _h, text as _text, app as _app, memo } from 'hyperapp';
-export { h, app, memo, u };
+export { h, app, memo, u, ur };
 
 function h(...args) {
   const a1 = args[1];
@@ -27,54 +27,44 @@ function h(...args) {
   return _h(args[0], props ?? {}, elmts);
 }
 
+function copy(q) {
+  return Array.isArray(q) ? [...q] : {...q};
+} 
+
+function copyState(state, propNames) {
+  state = copy(state);
+  for (let name of propNames) {
+    state[name] = copy(state[name]);
+  }
+  return state;
+}
+
 function u(...args) {
-  const propNames = [];
-  let i = 0;
-  while (typeof args[i] === 'string') {
-    propNames.push(args[i++]);
-  }
-  const f = args[i++];
-  if (typeof f !== 'function') {
-    throw Error('function expected');
-  }
-  let eff = [];
-  while (i < args.length) {
-    let e = args[i++]; 
-    if (typeof e === 'function') {
-      eff.push([e]);
-    }
-    else if (Array.isArray(e) && e.length === 2 && typeof e[0] === 'function') {
-      eff.push(e);
-    }
-    else {
-      throw Error('function or [function, options] array expected');
-    }
-  }
   return function(state, payload) {
-    state = {...state};
-    for (let name of propNames) {
-      const prop = state[name];
-      state[name] = Array.isArray(prop) ? [...prop] : {...prop};
-    }
-    f(state, payload);
-    if (eff.length) {
-      eff.unshift(state);
-      return eff;
-    }
-    return state;
-  };
+    state = copyState(state, args.slice(0, -1));
+    args[args.length - 1](state, payload);
+    return Array.isArray(state) ? [state] : state;
+  }
+}
+
+function ur(...args) {
+  return function(state, payload) {
+    state = copyState(state, args.slice(0, -1));
+    return args[args.length - 1](state, payload);
+  }
 }
 
 function app(options) {
-  if (!options.node) {
-    const cont = document.createElement('div');
-    document.body.append(cont);
-    return _app({...options, node: cont});
+  const ops = {...options};
+  ops.init = ops.init ?? {};
+  if (!ops.node) {
+    ops.node = document.createElement('div');
+    document.body.append(ops.node);
   }
-  if (typeof options.node === 'string') {
-    return _app({...options, node: document.querySelector(options.node)});  
+  else if (typeof ops.node === 'string') {
+    ops.node = document.querySelector(ops.node);
   }
-  return _app(options);
+  return _app(ops);
 }
 
 
